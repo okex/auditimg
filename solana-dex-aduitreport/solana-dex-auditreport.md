@@ -175,7 +175,7 @@ program-rust/src
 
 **账户缺少签名者检查 processor.rs Line361**
 
-在关闭 SwapInfo 账户函数 process_close_swap_info 中，缺少对 owner_account 账户进行签名验证，存在 SwapInfo 账户被攻击者关闭并盗取租金的风险。
+在关闭 SwapInfo 账户函数 `process_close_swap_info` 中，缺少对 `owner_account` 账户进行签名验证，存在 `Swap_Info` 账户被攻击者关闭并盗取租金的风险。
 
 ```Rust
 pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
@@ -200,7 +200,7 @@ pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) ->
 
 **缺少账户可写检查 processor.rs Line547**
 
-在构建单次兑换传入条件函数 process_single_step_swap_in 中，缺少对 swap_info_args.swap_info_acc 账户可写检查，传入不可写的 swap_info_args.swap_info_acc 账户会导致交易失败。
+在构建单次兑换传入条件函数 `process_single_step_swap_in` 中，缺少对 `swap_info_args.swap_info_acc` 账户可写检查，传入不可写的 `swap_info_args.swap_info_acc` 账户会导致交易失败。
 
 ```Rust
     pub fn process_single_step_swap_in(
@@ -233,7 +233,7 @@ pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) ->
 
 **未遵循基本编码原则 processor.rs Line668**
 
-在构建单次兑换传入条件函数 `process_single_step_swap_in` 中，缺少对 `to_amount` 是否为零的检测。当 `to_amount` 值为零且交易存在滑点时，可能会导致交易失败。
+在构建单次兑换传入条件函数 `process_single_step_swap_in` 中，缺少对 `to_amount` 是否为零的检测。当 `to_amount` 值为零时，代表目标交易存在滑点交易失败，未做检测可能会导致交易失败。
 
 ```Rust
 pub fn process_single_step_swap_in(
@@ -263,7 +263,7 @@ pub fn process_single_step_swap_in(
 
 **程序逻辑缺陷 processor.rs Line703**
 
-在 `process_single_step_swap_middle` 方法中，缺少对 `token_destination_account` 目标账户的 `owner` 进行检查, 在多跳过程中可能会因为前后输入不一致导致交易失败。
+在 `process_single_step_swap_middle` 方法中，缺少对 `token_destination_account` 目标账户的 `owner` 进行检查, 在特殊情况通过多笔交易实现多跳过程中，可能会因为前后输入不一致导致交易失败。
 
 ```Rust
 pub fn process_single_step_swap_middle(
@@ -331,7 +331,7 @@ pub fn process_single_step_swap_out(
 
 **程序逻辑缺陷 processor.rs Line832**
 
-在 `process_single_step_swap_middle` 方法中，没有对 `to_amount` 进行检查，以防止超出滑点限制
+在 `process_single_step_swap_middle` 方法中，没有对 `to_amount` 进行滑点限制检查，以防止在多跳过程中因滑点损耗而交易失败。
 
 ```Rust
 pub fn process_single_step_swap_middle(
