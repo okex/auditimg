@@ -233,7 +233,7 @@ pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) ->
 
 **未遵循基本编码原则 processor.rs Line668**
 
-在构建单次兑换传入条件函数 `process_single_step_swap_in` 中，缺少对 `to_amount` 是否为零的检测。当 `to_amount` 值为零时，代表目标交易存在滑点交易失败，未做检测可能会导致交易失败。
+在构建单次兑换传入条件函数 `process_single_step_swap_in` 中，缺少对 `to_amount` 是否为零的检测。当 `to_amount` 值为零时，代表目标交易滑点过大导致交易失败，未做检测将无法记录完整的有效交易信息。
 
 ```Rust
 pub fn process_single_step_swap_in(
