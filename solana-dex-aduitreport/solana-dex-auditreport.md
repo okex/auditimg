@@ -9,44 +9,44 @@
 
 ## 2、审计范围
 
-| 目录             | 文件                                     | SHA-256 哈希值                                                   |
-| :--------------- | :--------------------------------------- | :--------------------------------------------------------------- |
-| program-rust/src | /processor.rs                            | 5c98dafeb9403bb993ee804184b555fcbbb1cc4c1c61f8d7bf988262f6619642 |
-| program-rust/src | /entrypoint.rs                           | 633729b88a7a60a8c911526293088cec6bee5050ddb7b4b8f1c3fb5a3a837d7d |
-| program-rust/src | /exchanger/aldrin/mod.rs                 | 6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3 |
-| program-rust/src | /exchanger/aldrin/instruction.rs         | 21f7d2a4db498e89aa41d77f3a4b8f63ff9e2547d7b899afb877e1138e254b54 |
-| program-rust/src | /exchanger/cropper/mod.rs                | 6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3 |
-| program-rust/src | /exchanger/cropper/instruction.rs        | c394708bff80868036d46a0a07f1ec36ede616b5d464035e06e8de2f449646dd |
-| program-rust/src | /exchanger/serum_dex/order.rs            | c71f30a5e3a1c16a6e91186c3600c22f3903bed9a8e8891dc672f95245aa5ea8 |
-| program-rust/src | /exchanger/serum_dex/mod.rs              | 16537ddb03da43e8ea71f2410f6575bb5bc2c82de50598334f787694cc8545a8 |
-| program-rust/src | /exchanger/serum_dex/state.rs            | f6f957c3ca98ccad49cb3a776b4044bdf360a9c132a1a38b23b397fec71e9236 |
-| program-rust/src | /exchanger/serum_dex/instruction.rs      | da02ad7bc642560f7ec17a989242fc926cbcdd2319bf7519fcd3af066a29e6d1 |
-| program-rust/src | /exchanger/serum_dex/matching.rs         | 8422e476da79230b4bae76b5153482626188cb3c330b287fdfe2a1a76358ae07 |
-| program-rust/src | /exchanger/stable_swap/mod.rs            | 6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3 |
-| program-rust/src | /exchanger/stable_swap/instruction.rs    | 261b717c4b58777ed6f7e9399d4b638e7c1e88a31ea3c5129ad62b092ebed9dd |
-| program-rust/src | /exchanger/mod.rs                        | 2267faf100b3b304135d3d4065a8fbe079931eb84bb8350db2e9a48d6d37c9ff |
-| program-rust/src | /exchanger/crema/mod.rs                  | 6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3 |
-| program-rust/src | /exchanger/crema/instruction.rs          | bd5a57437f1b799f4539e1f52494aa16a51a0f2b14bb96c8227a886ff70585f4 |
-| program-rust/src | /exchanger/raydium/mod.rs                | 6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3 |
-| program-rust/src | /exchanger/raydium/instruction.rs        | 8b369a15e661dfb619a0d08943491f6297241a10bd46f7af54102c91c7a05d83 |
-| program-rust/src | /exchanger/spl_token_swap/mod.rs         | 6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3 |
-| program-rust/src | /exchanger/spl_token_swap/instruction.rs | 36d6401b5bd0ef675453e1d7a63cc901a255a53e2e46596c7114d1e01645a89e |
-| program-rust/src | /spl_token/error.rs                      | 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b |
-| program-rust/src | /spl_token/mod.rs                        | 615d6944d9e5cdf6a7c37b6829fb879f3dd73ab8517db34b81e0318b79e77544 |
-| program-rust/src | /spl_token/instruction.rs                | f7d621328305c48e5ce5a96084f2228e57120de6a96a7d1a6ecfc82941c21467 |
-| program-rust/src | /error.rs                                | 8e9fb29123019ee1809329b3ca1ece71ca31bff737e8e5cd6bb64e3c4308a10c |
-| program-rust/src | /lib.rs                                  | 511024c0cfcb2198d1610bd8413367b91c44d6735f70347513f4c535fdad6a0c |
-| program-rust/src | /parser/serum_dex.rs                     | 0b521e4447c90ec55b1efc7420934800d15f316380741bc1de3287d216374319 |
-| program-rust/src | /parser/cropper.rs                       | d58e60db2b5df7025679bedd522377e06ea294234d9523005658a83a01fbc39d |
-| program-rust/src | /parser/raydium.rs                       | 68acc1f332e98acd62a2aca86bd24cd78154e02d483f4e42541720c3afad49f4 |
-| program-rust/src | /parser/spl_token_swap.rs                | bafc73679b1892553531517dc0e85a0fe1f7698e06b6b08aa3df0acd3b891f82 |
-| program-rust/src | /parser/base.rs                          | bb54e7aa7bb9e4e2b72245e5fa4aaae28c0e1961ea486bdb2424447ac703cd01 |
-| program-rust/src | /parser/mod.rs                           | fbfe3b42e101f874532095b8f86ccb52999700d77c5282aa797e315ed0469632 |
-| program-rust/src | /parser/crema.rs                         | 57f98e552f3d96980227cc988128fef5c5d0a7fc127341eb6867cc33c2dfdb7d |
-| program-rust/src | /parser/aldrin.rs                        | c6a5183e98994381609f3762a7eee6579d5e1b24cc6fc57713fd8e0b9e82eea5 |
-| program-rust/src | /parser/stable_swap.rs                   | 067c9739e5f0b3143fe221cabb74753142e821724704a7c33d5e324ef104726e |
-| program-rust/src | /state.rs                                | 0f130fcdcc6cad5dfb79f98917efd7d8bfad8df72aa0a42e5fd5c44d3922622d |
-| program-rust/src | /instruction.rs                          | 5ca0c031cbb82107b5407465dd83b4ee0337be03ce550231a97ff284bf68a1a3 |
+| 目录             | 文件                                     | SHA-256 哈希值                                                     |
+| :--------------- | :--------------------------------------- | :----------------------------------------------------------------- |
+| program-rust/src | /processor.rs                            | `5c98dafeb9403bb993ee804184b555fcbbb1cc4c1c61f8d7bf988262f6619642` |
+| program-rust/src | /entrypoint.rs                           | `633729b88a7a60a8c911526293088cec6bee5050ddb7b4b8f1c3fb5a3a837d7d` |
+| program-rust/src | /exchanger/aldrin/mod.rs                 | `6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3` |
+| program-rust/src | /exchanger/aldrin/instruction.rs         | `21f7d2a4db498e89aa41d77f3a4b8f63ff9e2547d7b899afb877e1138e254b54` |
+| program-rust/src | /exchanger/cropper/mod.rs                | `6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3` |
+| program-rust/src | /exchanger/cropper/instruction.rs        | `c394708bff80868036d46a0a07f1ec36ede616b5d464035e06e8de2f449646dd` |
+| program-rust/src | /exchanger/serum_dex/order.rs            | `c71f30a5e3a1c16a6e91186c3600c22f3903bed9a8e8891dc672f95245aa5ea8` |
+| program-rust/src | /exchanger/serum_dex/mod.rs              | `16537ddb03da43e8ea71f2410f6575bb5bc2c82de50598334f787694cc8545a8` |
+| program-rust/src | /exchanger/serum_dex/state.rs            | `f6f957c3ca98ccad49cb3a776b4044bdf360a9c132a1a38b23b397fec71e9236` |
+| program-rust/src | /exchanger/serum_dex/instruction.rs      | `da02ad7bc642560f7ec17a989242fc926cbcdd2319bf7519fcd3af066a29e6d1` |
+| program-rust/src | /exchanger/serum_dex/matching.rs         | `8422e476da79230b4bae76b5153482626188cb3c330b287fdfe2a1a76358ae07` |
+| program-rust/src | /exchanger/stable_swap/mod.rs            | `6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3` |
+| program-rust/src | /exchanger/stable_swap/instruction.rs    | `261b717c4b58777ed6f7e9399d4b638e7c1e88a31ea3c5129ad62b092ebed9dd` |
+| program-rust/src | /exchanger/mod.rs                        | `2267faf100b3b304135d3d4065a8fbe079931eb84bb8350db2e9a48d6d37c9ff` |
+| program-rust/src | /exchanger/crema/mod.rs                  | `6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3` |
+| program-rust/src | /exchanger/crema/instruction.rs          | `bd5a57437f1b799f4539e1f52494aa16a51a0f2b14bb96c8227a886ff70585f4` |
+| program-rust/src | /exchanger/raydium/mod.rs                | `6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3` |
+| program-rust/src | /exchanger/raydium/instruction.rs        | `8b369a15e661dfb619a0d08943491f6297241a10bd46f7af54102c91c7a05d83` |
+| program-rust/src | /exchanger/spl_token_swap/mod.rs         | `6bd82534b98aa1c36869aba31abab9f14827855c3b655166166028cc14ca81d3` |
+| program-rust/src | /exchanger/spl_token_swap/instruction.rs | `36d6401b5bd0ef675453e1d7a63cc901a255a53e2e46596c7114d1e01645a89e` |
+| program-rust/src | /spl_token/error.rs                      | `01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b` |
+| program-rust/src | /spl_token/mod.rs                        | `615d6944d9e5cdf6a7c37b6829fb879f3dd73ab8517db34b81e0318b79e77544` |
+| program-rust/src | /spl_token/instruction.rs                | `f7d621328305c48e5ce5a96084f2228e57120de6a96a7d1a6ecfc82941c21467` |
+| program-rust/src | /error.rs                                | `8e9fb29123019ee1809329b3ca1ece71ca31bff737e8e5cd6bb64e3c4308a10c` |
+| program-rust/src | /lib.rs                                  | `511024c0cfcb2198d1610bd8413367b91c44d6735f70347513f4c535fdad6a0c` |
+| program-rust/src | /parser/serum_dex.rs                     | `0b521e4447c90ec55b1efc7420934800d15f316380741bc1de3287d216374319` |
+| program-rust/src | /parser/cropper.rs                       | `d58e60db2b5df7025679bedd522377e06ea294234d9523005658a83a01fbc39d` |
+| program-rust/src | /parser/raydium.rs                       | `68acc1f332e98acd62a2aca86bd24cd78154e02d483f4e42541720c3afad49f4` |
+| program-rust/src | /parser/spl_token_swap.rs                | `bafc73679b1892553531517dc0e85a0fe1f7698e06b6b08aa3df0acd3b891f82` |
+| program-rust/src | /parser/base.rs                          | `bb54e7aa7bb9e4e2b72245e5fa4aaae28c0e1961ea486bdb2424447ac703cd01` |
+| program-rust/src | /parser/mod.rs                           | `fbfe3b42e101f874532095b8f86ccb52999700d77c5282aa797e315ed0469632` |
+| program-rust/src | /parser/crema.rs                         | `57f98e552f3d96980227cc988128fef5c5d0a7fc127341eb6867cc33c2dfdb7d` |
+| program-rust/src | /parser/aldrin.rs                        | `c6a5183e98994381609f3762a7eee6579d5e1b24cc6fc57713fd8e0b9e82eea5` |
+| program-rust/src | /parser/stable_swap.rs                   | `067c9739e5f0b3143fe221cabb74753142e821724704a7c33d5e324ef104726e` |
+| program-rust/src | /state.rs                                | `0f130fcdcc6cad5dfb79f98917efd7d8bfad8df72aa0a42e5fd5c44d3922622d` |
+| program-rust/src | /instruction.rs                          | `5ca0c031cbb82107b5407465dd83b4ee0337be03ce550231a97ff284bf68a1a3` |
 
 ## 2、审计目的
 
