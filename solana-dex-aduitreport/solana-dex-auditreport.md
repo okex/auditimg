@@ -67,19 +67,6 @@ Dex-Solana 主要实现了交易聚合器兑换功能，接入适配了不同的
 ## 5、文件描述
 
 ```Shell
-program/src
-├── constants.rs #变量定义
-├── entrypoint.rs #指令入口
-├── error.rs #业务逻辑错误定义
-├── instruction.rs #指令定义
-├── lib.rs #模块定义
-├── pda.rs #业务中相关PDA账号
-├── processor.rs #指令处理代码
-├── state.rs #状态定义
-└── utils.rs #辅助函数
-```
-
-```Shell
 program-rust/src
 ├── entrypoint.rs #指令入口
 ├── error.rs #业务逻辑错误定义
@@ -174,19 +161,19 @@ program-rust/src
 | 哈希碰撞                 | 无    |        |
 | 领奖逻辑不当             | 无    |        |
 | 使用不推荐的方法         | 无    |        |
-| 未遵循基本编码原则       | 低    |        |
-| 账户缺少签名者检查       | 无    |        |
+| `未遵循基本编码原则`       | `低`    |        |
+| `账户缺少签名者检查`       | `中`   |        |
 | 账户缺少所有者检查       | 无    |        |
 | 解析账户数据前未验证账户 | 无    |        |
 | 缺少相同账户校验         | 无    |        |
 | 账户无法安全关闭         | 无    |        |
 | 账户数据类型混淆         | 无    |        |
-| 缺少账户可写检查         | 无    |        |
+| `缺少账户可写检查`         | `低`    |        |
 | 过时的外部依赖         | 无    |     |
 
 
 ## 7、审计详情
-** 账户缺少签名者检查 processor.rs Line361**
+**账户缺少签名者检查 processor.rs Line361**
 
 在关闭SwapInfo账户函数process_close_swap_info中，缺少对owner_account 账户进行签名验证，存在 SwapInfo 账户被攻击者关闭并盗取租金的风险。
 
@@ -244,7 +231,7 @@ program-rust/src
 
 ```
 
-** 未遵循基本编码原则 processor.rs Line668**
+**未遵循基本编码原则 processor.rs Line668**
 
 在构建单次兑换传入条件函数process_single_step_swap_in中，缺少对to_amount是否为零的检测。当to_amount值为零且交易存在滑点时，可能会导致交易失败。
 
