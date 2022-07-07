@@ -181,5 +181,95 @@ program-rust/src
 | 缺少相同账户校验         | 无    |        |
 | 账户无法安全关闭         | 无    |        |
 | 账户数据类型混淆         | 无    |        |
+| 缺少账户可写检查         | 无    |        |
+| 过时的外部依赖         | 无    |     |
+
 
 ## 7、审计详情
+** 账户缺少签名者检查 processor.rs Line361**
+
+在关闭SwapInfo账户函数process_close_swap_info中，缺少对owner_account 账户进行签名验证，存在 SwapInfo 账户被攻击者关闭并盗取租金的风险。
+
+```Rust
+    pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+    ...
+        let swap_info = SwapInfo::unpack(&swap_info_account.data.borrow())?；
+        
+        //@OKLink Audit Description: 仅检查swap_info账户owner是否与owner_account相等，未验证owner_account账户是否已签名
+        //@OKLink Audit Solution:添加owner_account签名验证
+        
+        if !Self::cmp_pubkeys(&swap_info.owner, owner_account.key) {
+            return Err(ProtocolError::InvalidOwner.into());
+        }
+        let dest_starting_lamports = destination_account.lamports();
+        **destination_account.lamports.borrow_mut() = dest_starting_lamports
+            .checked_add(swap_info_account.lamports())
+            .ok_or(ProtocolError::Overflow)?;
+        **swap_info_account.lamports.borrow_mut() = 0;
+        sol_memset(*swap_info_account.data.borrow_mut(), 0, SwapInfo::LEN);
+        Ok(())
+   }
+```
+
+**缺少账户可写检查 processor.rs Line547**
+
+在构建单次兑换传入条件函数process_single_step_swap_in中，缺少对swap_info_args.swap_info_acc账户可写检查，传入不可写的swap_info_args.swap_info_acc账户会导致交易失败。
+
+```Rust
+    pub fn process_single_step_swap_in(
+        program_id: &Pubkey,
+        data: &SwapInInstruction,
+        accounts: &[AccountInfo],
+        exchanger: ExchangerType,
+    ) -> ProgramResult {
+    ...
+        user_args
+        .token_source_account
+        .check_owner(user_args.source_account_owner.key, false)?;
+                
+        //@OKLink Audit Description:缺少对swap_info_args.swap_info_acc账户可写检查
+        //@OKLink Audit Solution: 添加对swap_info_args.swap_info_acc账户可写检查        
+
+        match swap_info_args.swap_info.token_account {
+            COption::Some(k) => {
+                if k != *user_args.token_destination_account.pubkey() {
+                    return Err(ProtocolError::InvalidTokenAccount.into());
+                }
+            }
+            COption::None => {
+                return Err(ProtocolError::InvalidTokenAccount.into());
+            }
+        };
+    ...
+
+```
+
+** 未遵循基本编码原则 processor.rs Line668**
+
+在构建单次兑换传入条件函数process_single_step_swap_in中，缺少对to_amount是否为零的检测。当to_amount值为零且交易存在滑点时，可能会导致交易失败。
+
+```Rust
+pub fn process_single_step_swap_in(
+        program_id: &Pubkey,
+        data: &SwapInInstruction,
+        accounts: &[AccountInfo],
+        exchanger: ExchangerType,
+    ) -> ProgramResult {
+    ...
+        let from_amount_changed = from_amount_before.checked_sub(from_amount_after).unwrap();
+        let to_amount = to_amount_after.checked_sub(to_amount_before).unwrap();
+        msg!("from_amount changed: {}", from_amount_changed);
+        msg!("to_amount: {}", to_amount);        
+
+        //@OKLink Audit Description:缺少对to_amount是否为零的检查
+        //@OKLink Audit Solution: 添加对对to_amount是否为零的检查 
+        
+        let mut swap_info = swap_info_args.swap_info;
+        swap_info.token_latest_amount = to_amount;
+        SwapInfo::pack(
+            swap_info,
+            &mut swap_info_args.swap_info_acc.data.borrow_mut(),
+        )?;
+    ...
+}
+```
