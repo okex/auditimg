@@ -175,7 +175,7 @@ program-rust/src
 
 **账户缺少签名者检查 processor.rs Line361**
 
-在关闭 SwapInfo 账户函数 `process_close_swap_info` 中，缺少对 `owner_account` 账户进行签名验证，存在 `Swap_Info` 账户被攻击者关闭并盗取租金的风险。
+在关闭 `Swap_Info` 账户函数 `process_close_swap_info` 中，缺少对 `owner_account` 账户进行签名验证，存在 `Swap_Info` 账户被攻击者关闭并盗取租金的风险。
 
 ```Rust
 pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
