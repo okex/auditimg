@@ -161,30 +161,30 @@ program-rust/src
 | 哈希碰撞                 | 无    |        |
 | 领奖逻辑不当             | 无    |        |
 | 使用不推荐的方法         | 无    |        |
-| `未遵循基本编码原则`       | `低`    |        |
-| `账户缺少签名者检查`       | `中`   |        |
+| `未遵循基本编码原则`     | `低`  |        |
+| `账户缺少签名者检查`     | `中`  |        |
 | 账户缺少所有者检查       | 无    |        |
 | 解析账户数据前未验证账户 | 无    |        |
 | 缺少相同账户校验         | 无    |        |
 | 账户无法安全关闭         | 无    |        |
 | 账户数据类型混淆         | 无    |        |
-| `缺少账户可写检查`         | `低`    |        |
-| 过时的外部依赖         | 无    |     |
-
+| `缺少账户可写检查`       | `低`  |        |
+| 过时的外部依赖           | 无    |        |
 
 ## 7、审计详情
+
 **账户缺少签名者检查 processor.rs Line361**
 
-在关闭SwapInfo账户函数process_close_swap_info中，缺少对owner_account 账户进行签名验证，存在 SwapInfo 账户被攻击者关闭并盗取租金的风险。
+在关闭 SwapInfo 账户函数 process_close_swap_info 中，缺少对 owner_account 账户进行签名验证，存在 SwapInfo 账户被攻击者关闭并盗取租金的风险。
 
 ```Rust
-    pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+pub fn process_close_swap_info(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
     ...
         let swap_info = SwapInfo::unpack(&swap_info_account.data.borrow())?；
-        
+
         //@OKLink Audit Description: 仅检查swap_info账户owner是否与owner_account相等，未验证owner_account账户是否已签名
         //@OKLink Audit Solution:添加owner_account签名验证
-        
+
         if !Self::cmp_pubkeys(&swap_info.owner, owner_account.key) {
             return Err(ProtocolError::InvalidOwner.into());
         }
@@ -200,7 +200,7 @@ program-rust/src
 
 **缺少账户可写检查 processor.rs Line547**
 
-在构建单次兑换传入条件函数process_single_step_swap_in中，缺少对swap_info_args.swap_info_acc账户可写检查，传入不可写的swap_info_args.swap_info_acc账户会导致交易失败。
+在构建单次兑换传入条件函数 process_single_step_swap_in 中，缺少对 swap_info_args.swap_info_acc 账户可写检查，传入不可写的 swap_info_args.swap_info_acc 账户会导致交易失败。
 
 ```Rust
     pub fn process_single_step_swap_in(
@@ -213,9 +213,9 @@ program-rust/src
         user_args
         .token_source_account
         .check_owner(user_args.source_account_owner.key, false)?;
-                
+
         //@OKLink Audit Description:缺少对swap_info_args.swap_info_acc账户可写检查
-        //@OKLink Audit Solution: 添加对swap_info_args.swap_info_acc账户可写检查        
+        //@OKLink Audit Solution: 添加对swap_info_args.swap_info_acc账户可写检查
 
         match swap_info_args.swap_info.token_account {
             COption::Some(k) => {
@@ -228,12 +228,12 @@ program-rust/src
             }
         };
     ...
-
+    }
 ```
 
 **未遵循基本编码原则 processor.rs Line668**
 
-在构建单次兑换传入条件函数process_single_step_swap_in中，缺少对to_amount是否为零的检测。当to_amount值为零且交易存在滑点时，可能会导致交易失败。
+在构建单次兑换传入条件函数 `process_single_step_swap_in` 中，缺少对 `to_amount` 是否为零的检测。当 `to_amount` 值为零且交易存在滑点时，可能会导致交易失败。
 
 ```Rust
 pub fn process_single_step_swap_in(
@@ -246,17 +246,110 @@ pub fn process_single_step_swap_in(
         let from_amount_changed = from_amount_before.checked_sub(from_amount_after).unwrap();
         let to_amount = to_amount_after.checked_sub(to_amount_before).unwrap();
         msg!("from_amount changed: {}", from_amount_changed);
-        msg!("to_amount: {}", to_amount);        
+        msg!("to_amount: {}", to_amount);
 
         //@OKLink Audit Description:缺少对to_amount是否为零的检查
-        //@OKLink Audit Solution: 添加对对to_amount是否为零的检查 
-        
+        //@OKLink Audit Solution: 添加对对to_amount是否为零的检查
+
         let mut swap_info = swap_info_args.swap_info;
         swap_info.token_latest_amount = to_amount;
         SwapInfo::pack(
             swap_info,
             &mut swap_info_args.swap_info_acc.data.borrow_mut(),
         )?;
+    ...
+}
+```
+
+**程序逻辑缺陷 processor.rs Line703**
+
+在 `process_single_step_swap_middle` 方法中，缺少对 `token_destination_account` 目标账户的 `owner` 进行检查, 在多跳过程中可能会因为前后输入不一致导致交易失败。
+
+```Rust
+pub fn process_single_step_swap_middle(
+        program_id: &Pubkey,
+        accounts: &[AccountInfo],
+        exchanger: ExchangerType,
+    ) -> ProgramResult {
+        ...
+
+        if !user_args.source_account_owner.is_signer {
+            return Err(ProtocolError::InvalidSignerAccount.into());
+        }
+        user_args
+            .token_source_account
+            .check_owner(user_args.source_account_owner.key, false)?;
+
+        //@OKLink Audit Description:缺少对 token_destination_account 账户 owner 的检查
+        //@OKLink Audit Solution: 添加对 token_destination_account 账户owner 的检查
+
+        if !swap_info_args.swap_info_acc.is_writable {
+            return Err(ProtocolError::ReadonlyAccount.into());
+        }
+
+        ...
+    }
+```
+
+**未遵循基本编码原则 processor.rs Line896, 900, 1001**
+
+在 `process_single_step_swap_out` 方法中，`expect_amount_out` 参数没有参与程序运算。与`process_single_step_swap_out_slim` 方法没有实际区别。
+
+```Rust
+pub fn process_single_step_swap_out(
+        program_id: &Pubkey,
+        data: &SwapOutInstruction,
+        accounts: &[AccountInfo],
+        exchanger: ExchangerType,
+    ) -> ProgramResult {
+        ...
+
+        //@OKLink Audit Description: expect_amount_out 变量没有被真正使用
+        //@OKLink Audit Solution: 检查该变量使用场景，是否为冗余变量
+
+        msg!(
+            "from_amount_before: {}, to_amount_before: {}, amount_in: {}, expect_amount_out: {}, minimum_amount_out: {}",
+            from_amount_before,
+            to_amount_before,
+            amount_in,
+            data.expect_amount_out,
+            data.minimum_amount_out,
+        );
+
+        ...
+
+        msg!(
+            "to_amount: {}, expect: {}, minimum: {}",
+            to_amount,
+            data.expect_amount_out,
+            data.minimum_amount_out,
+        );
+
+        ...
+    }
+```
+
+**程序逻辑缺陷 processor.rs Line832**
+
+在 `process_single_step_swap_middle` 方法中，没有对 `to_amount` 进行检查，以防止超出滑点限制
+
+```Rust
+pub fn process_single_step_swap_middle(
+        program_id: &Pubkey,
+        accounts: &[AccountInfo],
+        exchanger: ExchangerType,
+    ) -> ProgramResult {
+    ...
+    msg!("from_amount changed: {}", from_amount_changed);
+    msg!("to_amount: {},", to_amount);
+    if to_amount == 0 {
+        return Err(ProtocolError::DexSwapError.into());
+    }
+
+    //@OKLink Audit Description:缺少对 to_amount 进行检查，可能超出滑点限制
+    //@OKLink Audit Solution: 对 to_amount 进行滑点检查
+
+    let mut swap_info = swap_info_args.swap_info;
     ...
 }
 ```
