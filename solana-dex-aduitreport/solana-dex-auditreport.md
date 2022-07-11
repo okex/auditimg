@@ -329,27 +329,4 @@ pub fn process_single_step_swap_out(
     }
 ```
 
-**程序逻辑缺陷 processor.rs Line832**
 
-在 `process_single_step_swap_middle` 方法中，没有对 `to_amount` 进行滑点限制检查，以防止在多跳过程中因滑点损耗而交易失败。
-
-```Rust
-pub fn process_single_step_swap_middle(
-        program_id: &Pubkey,
-        accounts: &[AccountInfo],
-        exchanger: ExchangerType,
-    ) -> ProgramResult {
-    ...
-    msg!("from_amount changed: {}", from_amount_changed);
-    msg!("to_amount: {},", to_amount);
-    if to_amount == 0 {
-        return Err(ProtocolError::DexSwapError.into());
-    }
-
-    //@OKLink Audit Description:缺少对 to_amount 进行检查，可能超出滑点限制
-    //@OKLink Audit Solution: 对 to_amount 进行滑点检查
-
-    let mut swap_info = swap_info_args.swap_info;
-    ...
-}
-```
